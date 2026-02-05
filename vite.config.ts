@@ -8,6 +8,7 @@
   const __dirname = path.dirname(__filename);
 
   export default defineConfig({
+    base: '/Minimalistmobileappui/',
     plugins: [react()],
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
