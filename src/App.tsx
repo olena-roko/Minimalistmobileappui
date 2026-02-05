@@ -6,12 +6,32 @@ import { ChannelsSection } from './components/ChannelsSection';
 import { BottomNav } from './components/BottomNav';
 import { ActiveChannelsPage } from './components/ActiveChannelsPage';
 import { MutedChannelsPage } from './components/MutedChannelsPage';
+import { AppDetailsPage } from './components/AppDetailsPage';
+import { CategoryDetailsPage } from './components/CategoryDetailsPage';
 import { motion, AnimatePresence } from 'motion/react';
+import { OnboardingFlow } from './components/OnboardingFlow';
 
 export default function App() {
   const [currentStatus, setCurrentStatus] = useState('Work');
   const [showActiveChannels, setShowActiveChannels] = useState(false);
   const [showMutedChannels, setShowMutedChannels] = useState(false);
+  const [selectedAppDetail, setSelectedAppDetail] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !localStorage.getItem('onboarding_completed');
+    }
+    return true;
+  });
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('onboarding_completed', 'true');
+    setShowOnboarding(false);
+  };
+
+  if (showOnboarding) {
+    return <OnboardingFlow onComplete={handleOnboardingComplete} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans pb-32 overflow-x-hidden">
@@ -34,9 +54,15 @@ export default function App() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white overflow-hidden">
-              <UserCircle size={40} className="text-slate-400 -mt-1 -ml-1" />
-            </div>
+            <button 
+              onClick={() => {
+                localStorage.removeItem('onboarding_completed');
+                window.location.reload();
+              }}
+              className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white overflow-hidden flex items-center justify-center text-slate-400"
+            >
+              <UserCircle size={40} className="-mt-1 -ml-1" />
+            </button>
           </div>
         </header>
 
@@ -51,27 +77,18 @@ export default function App() {
               currentStatus={currentStatus} 
               onViewActiveChannels={() => setShowActiveChannels(true)}
               onViewMutedChannels={() => setShowMutedChannels(true)}
+              onViewAppDetails={(name) => setSelectedAppDetail(name)}
             />
           </section>
 
           <section>
             <div className="flex justify-between items-end mb-4">
               <h2 className="text-lg font-medium text-slate-800">Categories</h2>
-              <span className="text-xs text-blue-600 font-medium cursor-pointer">Edit Rules</span>
+              <span className="text-xs text-blue-600 font-medium cursor-pointer">Quick Filter</span>
             </div>
-            <CategoryGrid />
+            <CategoryGrid onCategorySelect={(name) => setSelectedCategory(name)} />
           </section>
           
-          <section className="pt-4">
-            <motion.div 
-              whileTap={{ scale: 0.98 }}
-              className="w-full bg-slate-900 text-white rounded-3xl p-6 shadow-xl shadow-slate-200 flex flex-col items-center justify-center text-center space-y-2 cursor-pointer"
-            >
-              <div className="w-12 h-1 bg-white/20 rounded-full mb-2" />
-              <h3 className="text-lg font-medium">Release the Calm</h3>
-              <p className="text-xs text-white/60">Tap to deliver all scheduled notifications</p>
-            </motion.div>
-          </section>
         </main>
       </div>
 
@@ -82,9 +99,23 @@ export default function App() {
         {showMutedChannels && (
           <MutedChannelsPage onBack={() => setShowMutedChannels(false)} />
         )}
+        {selectedAppDetail && (
+          <AppDetailsPage 
+            appName={selectedAppDetail} 
+            onBack={() => setSelectedAppDetail(null)} 
+          />
+        )}
+        {selectedCategory && (
+          <CategoryDetailsPage 
+            categoryName={selectedCategory} 
+            onBack={() => setSelectedCategory(null)} 
+          />
+        )}
       </AnimatePresence>
 
-      <BottomNav />
+      <div className="relative z-[100]">
+        <BottomNav />
+      </div>
     </div>
   );
 }

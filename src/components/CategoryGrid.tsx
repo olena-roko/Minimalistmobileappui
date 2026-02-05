@@ -9,12 +9,17 @@ const categories = [
   { id: 'university', name: 'University', icon: GraduationCap, count: 8, color: 'bg-indigo-50 text-indigo-600' },
 ];
 
-export const CategoryGrid: React.FC = () => {
+interface CategoryGridProps {
+  onCategorySelect: (name: string) => void;
+}
+
+export const CategoryGrid: React.FC<CategoryGridProps> = ({ onCategorySelect }) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       {categories.map((cat, idx) => (
         <motion.button
           key={cat.id}
+          onClick={() => onCategorySelect(cat.name)}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: idx * 0.05 }}

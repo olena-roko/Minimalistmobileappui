@@ -20,12 +20,14 @@ interface ChannelsSectionProps {
   currentStatus: string;
   onViewActiveChannels: () => void;
   onViewMutedChannels: () => void;
+  onViewAppDetails: (appName: string) => void;
 }
 
 export const ChannelsSection: React.FC<ChannelsSectionProps> = ({ 
   currentStatus, 
   onViewActiveChannels,
-  onViewMutedChannels 
+  onViewMutedChannels,
+  onViewAppDetails
 }) => {
   const [allDevices, setAllDevices] = useState(true);
 
@@ -125,6 +127,7 @@ export const ChannelsSection: React.FC<ChannelsSectionProps> = ({
         {apps.map((app, idx) => (
           <motion.button
             key={app.name}
+            onClick={() => onViewAppDetails(app.name)}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: idx * 0.05 }}

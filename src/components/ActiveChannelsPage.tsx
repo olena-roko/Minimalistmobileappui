@@ -43,7 +43,7 @@ export const ActiveChannelsPage: React.FC<ActiveChannelsPageProps> = ({ onBack }
       animate={{ x: 0 }}
       exit={{ x: '100%' }}
       transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-      className="fixed inset-0 bg-[#F8FAFC] z-[60] overflow-y-auto pb-24"
+      className="fixed inset-0 bg-[#F8FAFC] z-[60] overflow-y-auto pb-32"
     >
       <div className="max-w-md mx-auto px-6 pt-12">
         <header className="flex items-center gap-4 mb-8">
